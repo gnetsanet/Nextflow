@@ -1,0 +1,283 @@
+<!doctype html>
+<!--
+  ~ Copyright (c) 2013-2017, Centre for Genomic Regulation (CRG).
+  ~ Copyright (c) 2013-2017, Paolo Di Tommaso and the respective authors.
+  ~
+  ~   This file is part of 'Nextflow'.
+  ~
+  ~   Nextflow is free software: you can redistribute it and/or modify
+  ~   it under the terms of the GNU General Public License as published by
+  ~   the Free Software Foundation, either version 3 of the License, or
+  ~   (at your option) any later version.
+  ~
+  ~   Nextflow is distributed in the hope that it will be useful,
+  ~   but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~   GNU General Public License for more details.
+  ~
+  ~   You should have received a copy of the GNU General Public License
+  ~   along with Nextflow.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<script type="text/javascript">
+var prot = (("https:" == document.location.protocol) ? "https://" : "http://");
+document.write(unescape("%3Cscript src='" + prot + "code.jquery.com/jquery-latest.min.js' type='text/javascript' %3E%3C/script%3E"));
+document.write(unescape("%3Cscript src='" + prot + "d3js.org/d3.v3.min.js' charset='utf-8' type='text/javascript' %3E%3C/script%3E"));
+document.write(unescape("%3Cscript src='" + prot + "cdn.rawgit.com/nextflow-io/d3-timeline/82622c4cc35bac7283b3a317826b0709ac1ae476/src/d3-timeline.js' type='text/javascript' %3E%3C/script%3E"));
+</script>
+<style type="text/css">
+* {
+  font-family: 'Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+}
+
+.axis path,
+.axis line {
+fill: none;
+  stroke: black;
+  shape-rendering: crispEdges;
+}
+
+.axis text {
+  font-size: 10px;
+}
+
+div#timeline g text {
+  font-size: 13px;
+}
+
+text.timeline-label {
+  font-size: 13px;
+}
+
+#timeline2 .axis {
+  transform: translate(0px,30px);
+  -ms-transform: translate(0px,30px); /* IE 9 */
+  -webkit-transform: translate(0px,30px); /* Safari and Chrome */
+  -o-transform: translate(0px,30px); /* Opera */
+  -moz-transform: translate(0px,30px); /* Firefox */
+}
+
+.coloredDiv {
+  height:20px; width:20px; float:left;
+}
+
+#footer {
+  padding-top: 3em; color: #bfbfbf; font-size: 13px;
+}
+
+#footer a:visited {
+  color: #bfbfbf;
+  text-decoration: underline;
+}
+</style>
+<script type="text/javascript">
+var handler=null;
+// see https://github.com/mbostock/d3/wiki/Ordinal-Scales#category20c
+var colors = d3.scale.category20c().domain(d3.range(0,20)).range()
+
+function c0(index) { return "#9c9c9c"; }
+function c1(index) { return "#bdbdbd"; }
+function c2(index) { return colors[index % 16]; } // <-- note: uses only the first 16 colors
+
+var elapsed="12m 7s"
+var beginningMillis=1511711072036;
+var endingMillis=1511711798571;
+var data=[
+{"label": "prepareToSleep (0)", "times": [{"starting_time": 1511711073003, "ending_time": 1511711087659, "color":c1(0)}, {"starting_time": 1511711087659, "ending_time": 1511711087664, "color":c2(0), "label": "14.7s \/ -"}]},
+{"label": "prepareToSleep (1)", "times": [{"starting_time": 1511711073081, "ending_time": 1511711102655, "color":c1(0)}, {"starting_time": 1511711102655, "ending_time": 1511711102657, "color":c2(0), "label": "29.6s \/ -"}]},
+{"label": "prepareToSleep (3)", "times": [{"starting_time": 1511711073128, "ending_time": 1511711117655, "color":c1(0)}, {"starting_time": 1511711117655, "ending_time": 1511711117658, "color":c2(0), "label": "44.5s \/ -"}]},
+{"label": "prepareToSleep (2)", "times": [{"starting_time": 1511711073190, "ending_time": 1511711132657, "color":c1(0)}, {"starting_time": 1511711132657, "ending_time": 1511711132662, "color":c2(0), "label": "59.5s \/ -"}]},
+{"label": "prepareToSleep (4)", "times": [{"starting_time": 1511711073233, "ending_time": 1511711147658, "color":c1(0)}, {"starting_time": 1511711147658, "ending_time": 1511711147661, "color":c2(0), "label": "1m 14s \/ -"}]},
+{"label": "prepareToSleep (6)", "times": [{"starting_time": 1511711073285, "ending_time": 1511711162659, "color":c1(0)}, {"starting_time": 1511711162659, "ending_time": 1511711162661, "color":c2(0), "label": "1m 29s \/ -"}]},
+{"label": "prepareToSleep (5)", "times": [{"starting_time": 1511711073329, "ending_time": 1511711177659, "color":c1(0)}, {"starting_time": 1511711177659, "ending_time": 1511711177661, "color":c2(0), "label": "1m 44s \/ -"}]},
+{"label": "prepareToSleep (7)", "times": [{"starting_time": 1511711073383, "ending_time": 1511711192660, "color":c1(0)}, {"starting_time": 1511711192660, "ending_time": 1511711192662, "color":c2(0), "label": "1m 59s \/ -"}]},
+{"label": "prepareToSleep (8)", "times": [{"starting_time": 1511711073424, "ending_time": 1511711207661, "color":c1(0)}, {"starting_time": 1511711207661, "ending_time": 1511711207664, "color":c2(0), "label": "2m 14s \/ -"}]},
+{"label": "prepareToSleep (9)", "times": [{"starting_time": 1511711073465, "ending_time": 1511711222662, "color":c1(0)}, {"starting_time": 1511711222662, "ending_time": 1511711222664, "color":c2(0), "label": "2m 29s \/ -"}]},
+{"label": "prepareToSleep (10)", "times": [{"starting_time": 1511711073526, "ending_time": 1511711237663, "color":c1(0)}, {"starting_time": 1511711237663, "ending_time": 1511711237665, "color":c2(0), "label": "2m 44s \/ -"}]},
+{"label": "prepareToSleep (11)", "times": [{"starting_time": 1511711073582, "ending_time": 1511711252664, "color":c1(0)}, {"starting_time": 1511711252664, "ending_time": 1511711252666, "color":c2(0), "label": "2m 59s \/ -"}]},
+{"label": "prepareToSleep (12)", "times": [{"starting_time": 1511711073626, "ending_time": 1511711267665, "color":c1(0)}, {"starting_time": 1511711267665, "ending_time": 1511711267667, "color":c2(0), "label": "3m 14s \/ -"}]},
+{"label": "prepareToSleep (14)", "times": [{"starting_time": 1511711073665, "ending_time": 1511711282665, "color":c1(0)}, {"starting_time": 1511711282665, "ending_time": 1511711282667, "color":c2(0), "label": "3m 29s \/ -"}]},
+{"label": "prepareToSleep (13)", "times": [{"starting_time": 1511711073709, "ending_time": 1511711297665, "color":c1(0)}, {"starting_time": 1511711297665, "ending_time": 1511711297667, "color":c2(0), "label": "3m 44s \/ -"}]},
+{"label": "prepareToSleep (16)", "times": [{"starting_time": 1511711073774, "ending_time": 1511711312665, "color":c1(0)}, {"starting_time": 1511711312665, "ending_time": 1511711312668, "color":c2(0), "label": "3m 59s \/ -"}]},
+{"label": "prepareToSleep (17)", "times": [{"starting_time": 1511711073810, "ending_time": 1511711327665, "color":c1(0)}, {"starting_time": 1511711327665, "ending_time": 1511711327667, "color":c2(0), "label": "4m 14s \/ -"}]},
+{"label": "prepareToSleep (18)", "times": [{"starting_time": 1511711073846, "ending_time": 1511711342667, "color":c1(0)}, {"starting_time": 1511711342667, "ending_time": 1511711342669, "color":c2(0), "label": "4m 29s \/ -"}]},
+{"label": "prepareToSleep (15)", "times": [{"starting_time": 1511711073886, "ending_time": 1511711357667, "color":c1(0)}, {"starting_time": 1511711357667, "ending_time": 1511711357669, "color":c2(0), "label": "4m 44s \/ -"}]},
+{"label": "prepareToSleep (20)", "times": [{"starting_time": 1511711073933, "ending_time": 1511711372667, "color":c1(0)}, {"starting_time": 1511711372667, "ending_time": 1511711372668, "color":c2(0), "label": "4m 59s \/ -"}]},
+{"label": "prepareToSleep (21)", "times": [{"starting_time": 1511711073972, "ending_time": 1511711387671, "color":c1(0)}, {"starting_time": 1511711387671, "ending_time": 1511711387673, "color":c2(0), "label": "5m 14s \/ -"}]},
+{"label": "prepareToSleep (19)", "times": [{"starting_time": 1511711074016, "ending_time": 1511711402670, "color":c1(0)}, {"starting_time": 1511711402670, "ending_time": 1511711402672, "color":c2(0), "label": "5m 29s \/ -"}]},
+{"label": "prepareToSleep (22)", "times": [{"starting_time": 1511711074053, "ending_time": 1511711417672, "color":c1(0)}, {"starting_time": 1511711417672, "ending_time": 1511711417673, "color":c2(0), "label": "5m 44s \/ -"}]},
+{"label": "prepareToSleep (23)", "times": [{"starting_time": 1511711074097, "ending_time": 1511711432672, "color":c1(0)}, {"starting_time": 1511711432672, "ending_time": 1511711432673, "color":c2(0), "label": "5m 59s \/ -"}]},
+{"label": "prepareToSleep (24)", "times": [{"starting_time": 1511711074143, "ending_time": 1511711447672, "color":c1(0)}, {"starting_time": 1511711447672, "ending_time": 1511711447674, "color":c2(0), "label": "6m 14s \/ -"}]},
+{"label": "prepareToSleep (25)", "times": [{"starting_time": 1511711074204, "ending_time": 1511711462672, "color":c1(0)}, {"starting_time": 1511711462672, "ending_time": 1511711462674, "color":c2(0), "label": "6m 28s \/ -"}]},
+{"label": "prepareToSleep (26)", "times": [{"starting_time": 1511711074242, "ending_time": 1511711477674, "color":c1(0)}, {"starting_time": 1511711477674, "ending_time": 1511711477676, "color":c2(0), "label": "6m 43s \/ -"}]},
+{"label": "prepareToSleep (27)", "times": [{"starting_time": 1511711074283, "ending_time": 1511711492675, "color":c1(0)}, {"starting_time": 1511711492675, "ending_time": 1511711492677, "color":c2(0), "label": "6m 58s \/ -"}]},
+{"label": "prepareToSleep (28)", "times": [{"starting_time": 1511711074321, "ending_time": 1511711547679, "color":c1(0)}, {"starting_time": 1511711547679, "ending_time": 1511711547682, "color":c2(0), "label": "7m 53s \/ -"}]},
+{"label": "prepareToSleep (29)", "times": [{"starting_time": 1511711074355, "ending_time": 1511711547692, "color":c1(0)}, {"starting_time": 1511711547692, "ending_time": 1511711547696, "color":c2(0), "label": "7m 53s \/ -"}]},
+{"label": "prepareToSleep (30)", "times": [{"starting_time": 1511711074393, "ending_time": 1511711507676, "color":c1(0)}, {"starting_time": 1511711507676, "ending_time": 1511711507678, "color":c2(0), "label": "7m 13s \/ -"}]},
+{"label": "prepareToSleep (31)", "times": [{"starting_time": 1511711074438, "ending_time": 1511711557679, "color":c1(0)}, {"starting_time": 1511711557679, "ending_time": 1511711557683, "color":c2(0), "label": "8m 3s \/ -"}]},
+{"label": "prepareToSleep (32)", "times": [{"starting_time": 1511711074476, "ending_time": 1511711557690, "color":c1(0)}, {"starting_time": 1511711557690, "ending_time": 1511711557694, "color":c2(0), "label": "8m 3s \/ -"}]},
+{"label": "prepareToSleep (33)", "times": [{"starting_time": 1511711074513, "ending_time": 1511711522678, "color":c1(0)}, {"starting_time": 1511711522678, "ending_time": 1511711522680, "color":c2(0), "label": "7m 28s \/ -"}]},
+{"label": "prepareToSleep (34)", "times": [{"starting_time": 1511711074551, "ending_time": 1511711557747, "color":c1(0)}, {"starting_time": 1511711557747, "ending_time": 1511711557751, "color":c2(0), "label": "8m 3s \/ -"}]},
+{"label": "prepareToSleep (36)", "times": [{"starting_time": 1511711074594, "ending_time": 1511711557798, "color":c1(0)}, {"starting_time": 1511711557798, "ending_time": 1511711557802, "color":c2(0), "label": "8m 3s \/ -"}]},
+{"label": "prepareToSleep (35)", "times": [{"starting_time": 1511711074631, "ending_time": 1511711537677, "color":c1(0)}, {"starting_time": 1511711537677, "ending_time": 1511711537679, "color":c2(0), "label": "7m 43s \/ -"}]},
+{"label": "prepareToSleep (38)", "times": [{"starting_time": 1511711074675, "ending_time": 1511711557851, "color":c1(0)}, {"starting_time": 1511711557851, "ending_time": 1511711557855, "color":c2(0), "label": "8m 3s \/ -"}]},
+{"label": "prepareToSleep (37)", "times": [{"starting_time": 1511711074711, "ending_time": 1511711557904, "color":c1(0)}, {"starting_time": 1511711557904, "ending_time": 1511711557908, "color":c2(0), "label": "8m 3s \/ -"}]},
+{"label": "prepareToSleep (40)", "times": [{"starting_time": 1511711074746, "ending_time": 1511711552678, "color":c1(0)}, {"starting_time": 1511711552678, "ending_time": 1511711552681, "color":c2(0), "label": "7m 58s \/ -"}]},
+{"label": "prepareToSleep (39)", "times": [{"starting_time": 1511711074783, "ending_time": 1511711557955, "color":c1(0)}, {"starting_time": 1511711557955, "ending_time": 1511711557958, "color":c2(0), "label": "8m 3s \/ -"}]},
+{"label": "actuallySleep (0)", "times": [{"starting_time": 1511711087797, "ending_time": 1511711562680, "color":c1(1)}, {"starting_time": 1511711562680, "ending_time": 1511711568699, "color":c2(1), "label": "7m 55s \/ 326.3 MB"}]},
+{"label": "actuallySleep (1)", "times": [{"starting_time": 1511711102723, "ending_time": 1511711567679, "color":c1(1)}, {"starting_time": 1511711567679, "ending_time": 1511711572689, "color":c2(1), "label": "7m 50s \/ 326.3 MB"}]},
+{"label": "actuallySleep (2)", "times": [{"starting_time": 1511711117715, "ending_time": 1511711602680, "color":c1(1)}, {"starting_time": 1511711602680, "ending_time": 1511711607689, "color":c2(1), "label": "8m 5s \/ 326.3 MB"}]},
+{"label": "actuallySleep (3)", "times": [{"starting_time": 1511711132718, "ending_time": 1511711602690, "color":c1(1)}, {"starting_time": 1511711602690, "ending_time": 1511711611701, "color":c2(1), "label": "7m 50s \/ 326.3 MB"}]},
+{"label": "actuallySleep (4)", "times": [{"starting_time": 1511711147716, "ending_time": 1511711582679, "color":c1(1)}, {"starting_time": 1511711582679, "ending_time": 1511711592686, "color":c2(1), "label": "7m 25s \/ 326.3 MB"}]},
+{"label": "actuallySleep (5)", "times": [{"starting_time": 1511711162717, "ending_time": 1511711637682, "color":c1(1)}, {"starting_time": 1511711637682, "ending_time": 1511711642693, "color":c2(1), "label": "7m 55s \/ 326.3 MB"}]},
+{"label": "actuallySleep (6)", "times": [{"starting_time": 1511711177709, "ending_time": 1511711602699, "color":c1(1)}, {"starting_time": 1511711602699, "ending_time": 1511711608710, "color":c2(1), "label": "7m 5s \/ 326.3 MB"}]},
+{"label": "actuallySleep (7)", "times": [{"starting_time": 1511711192716, "ending_time": 1511711597679, "color":c1(1)}, {"starting_time": 1511711597679, "ending_time": 1511711605687, "color":c2(1), "label": "6m 50s \/ 326.3 MB"}]},
+{"label": "actuallySleep (8)", "times": [{"starting_time": 1511711207715, "ending_time": 1511711627681, "color":c1(1)}, {"starting_time": 1511711627681, "ending_time": 1511711634690, "color":c2(1), "label": "7m \/ 326.3 MB"}]},
+{"label": "actuallySleep (9)", "times": [{"starting_time": 1511711222722, "ending_time": 1511711637691, "color":c1(1)}, {"starting_time": 1511711637691, "ending_time": 1511711644700, "color":c2(1), "label": "6m 55s \/ 326.3 MB"}]},
+{"label": "actuallySleep (10)", "times": [{"starting_time": 1511711237730, "ending_time": 1511711612680, "color":c1(1)}, {"starting_time": 1511711612680, "ending_time": 1511711622688, "color":c2(1), "label": "6m 25s \/ 326.3 MB"}]},
+{"label": "actuallySleep (11)", "times": [{"starting_time": 1511711252718, "ending_time": 1511711667684, "color":c1(1)}, {"starting_time": 1511711667684, "ending_time": 1511711677693, "color":c2(1), "label": "6m 55s \/ 326.3 MB"}]},
+{"label": "actuallySleep (12)", "times": [{"starting_time": 1511711267718, "ending_time": 1511711627691, "color":c1(1)}, {"starting_time": 1511711627691, "ending_time": 1511711634700, "color":c2(1), "label": "6m \/ 326.3 MB"}]},
+{"label": "actuallySleep (13)", "times": [{"starting_time": 1511711282725, "ending_time": 1511711627699, "color":c1(1)}, {"starting_time": 1511711627699, "ending_time": 1511711632706, "color":c2(1), "label": "5m 50s \/ 326.3 MB"}]},
+{"label": "actuallySleep (14)", "times": [{"starting_time": 1511711297726, "ending_time": 1511711647682, "color":c1(1)}, {"starting_time": 1511711647682, "ending_time": 1511711652691, "color":c2(1), "label": "5m 50s \/ 326.3 MB"}]},
+{"label": "actuallySleep (15)", "times": [{"starting_time": 1511711312727, "ending_time": 1511711667694, "color":c1(1)}, {"starting_time": 1511711667694, "ending_time": 1511711672705, "color":c2(1), "label": "5m 55s \/ 326.3 MB"}]},
+{"label": "actuallySleep (16)", "times": [{"starting_time": 1511711327712, "ending_time": 1511711642681, "color":c1(1)}, {"starting_time": 1511711642681, "ending_time": 1511711651688, "color":c2(1), "label": "5m 20s \/ 326.3 MB"}]},
+{"label": "actuallySleep (17)", "times": [{"starting_time": 1511711342729, "ending_time": 1511711697689, "color":c1(1)}, {"starting_time": 1511711697689, "ending_time": 1511711703697, "color":c2(1), "label": "5m 55s \/ 326.3 MB"}]},
+{"label": "actuallySleep (18)", "times": [{"starting_time": 1511711357713, "ending_time": 1511711667707, "color":c1(1)}, {"starting_time": 1511711667707, "ending_time": 1511711673715, "color":c2(1), "label": "5m 10s \/ 326.3 MB"}]},
+{"label": "actuallySleep (19)", "times": [{"starting_time": 1511711372715, "ending_time": 1511711657682, "color":c1(1)}, {"starting_time": 1511711657682, "ending_time": 1511711667689, "color":c2(1), "label": "4m 55s \/ 326.3 MB"}, {"starting_time": 1511711667689, "ending_time": 1511711667715, "color":c1(1)}]},
+{"label": "actuallySleep (20)", "times": [{"starting_time": 1511711387722, "ending_time": 1511711687689, "color":c1(1)}, {"starting_time": 1511711687689, "ending_time": 1511711692698, "color":c2(1), "label": "5m \/ 326.3 MB"}]},
+{"label": "actuallySleep (21)", "times": [{"starting_time": 1511711402733, "ending_time": 1511711697702, "color":c1(1)}, {"starting_time": 1511711697702, "ending_time": 1511711704710, "color":c2(1), "label": "4m 55s \/ 326.3 MB"}]},
+{"label": "actuallySleep (22)", "times": [{"starting_time": 1511711417720, "ending_time": 1511711672683, "color":c1(1)}, {"starting_time": 1511711672683, "ending_time": 1511711682691, "color":c2(1), "label": "4m 25s \/ 326.3 MB"}]},
+{"label": "actuallySleep (23)", "times": [{"starting_time": 1511711432725, "ending_time": 1511711732689, "color":c1(1)}, {"starting_time": 1511711732689, "ending_time": 1511711742698, "color":c2(1), "label": "5m \/ 326.3 MB"}]},
+{"label": "actuallySleep (24)", "times": [{"starting_time": 1511711447722, "ending_time": 1511711682697, "color":c1(1)}, {"starting_time": 1511711682697, "ending_time": 1511711689705, "color":c2(1), "label": "3m 55s \/ 326.3 MB"}]},
+{"label": "actuallySleep (25)", "times": [{"starting_time": 1511711462729, "ending_time": 1511711687697, "color":c1(1)}, {"starting_time": 1511711687697, "ending_time": 1511711696710, "color":c2(1), "label": "3m 50s \/ 326.3 MB"}]},
+{"label": "actuallySleep (26)", "times": [{"starting_time": 1511711477721, "ending_time": 1511711717690, "color":c1(1)}, {"starting_time": 1511711717690, "ending_time": 1511711724699, "color":c2(1), "label": "4m \/ 326.3 MB"}]},
+{"label": "actuallySleep (27)", "times": [{"starting_time": 1511711492726, "ending_time": 1511711732699, "color":c1(1)}, {"starting_time": 1511711732699, "ending_time": 1511711739708, "color":c2(1), "label": "4m \/ 326.3 MB"}]},
+{"label": "actuallySleep (28)", "times": [{"starting_time": 1511711507722, "ending_time": 1511711702689, "color":c1(1)}, {"starting_time": 1511711702689, "ending_time": 1511711711697, "color":c2(1), "label": "3m 20s \/ 326.3 MB"}]},
+{"label": "actuallySleep (29)", "times": [{"starting_time": 1511711522733, "ending_time": 1511711757692, "color":c1(1)}, {"starting_time": 1511711757692, "ending_time": 1511711763702, "color":c2(1), "label": "3m 55s \/ 326.3 MB"}]},
+{"label": "actuallySleep (30)", "times": [{"starting_time": 1511711537731, "ending_time": 1511711717699, "color":c1(1)}, {"starting_time": 1511711717699, "ending_time": 1511711727708, "color":c2(1), "label": "3m \/ 326.3 MB"}]},
+{"label": "actuallySleep (31)", "times": [{"starting_time": 1511711547744, "ending_time": 1511711717709, "color":c1(1)}, {"starting_time": 1511711717709, "ending_time": 1511711722716, "color":c2(1), "label": "2m 55s \/ 326.3 MB"}]},
+{"label": "actuallySleep (32)", "times": [{"starting_time": 1511711547828, "ending_time": 1511711732710, "color":c1(1)}, {"starting_time": 1511711732710, "ending_time": 1511711737719, "color":c2(1), "label": "3m 5s \/ 326.3 MB"}]},
+{"label": "actuallySleep (33)", "times": [{"starting_time": 1511711552736, "ending_time": 1511711732718, "color":c1(1)}, {"starting_time": 1511711732718, "ending_time": 1511711739727, "color":c2(1), "label": "3m \/ 326.3 MB"}]},
+{"label": "actuallySleep (34)", "times": [{"starting_time": 1511711557738, "ending_time": 1511711732726, "color":c1(1)}, {"starting_time": 1511711732726, "ending_time": 1511711738733, "color":c2(1), "label": "3m \/ 326.3 MB"}]},
+{"label": "actuallySleep (35)", "times": [{"starting_time": 1511711557792, "ending_time": 1511711732727, "color":c1(1)}, {"starting_time": 1511711732727, "ending_time": 1511711739739, "color":c2(1), "label": "3m \/ 326.3 MB"}]},
+{"label": "actuallySleep (36)", "times": [{"starting_time": 1511711557843, "ending_time": 1511711732729, "color":c1(1)}, {"starting_time": 1511711732729, "ending_time": 1511711739742, "color":c2(1), "label": "3m \/ 326.3 MB"}]},
+{"label": "actuallySleep (37)", "times": [{"starting_time": 1511711557895, "ending_time": 1511711747690, "color":c1(1)}, {"starting_time": 1511711747690, "ending_time": 1511711754698, "color":c2(1), "label": "3m 15s \/ 326.3 MB"}]},
+{"label": "actuallySleep (38)", "times": [{"starting_time": 1511711557948, "ending_time": 1511711762692, "color":c1(1)}, {"starting_time": 1511711762692, "ending_time": 1511711768701, "color":c2(1), "label": "3m 25s \/ 326.3 MB"}]},
+{"label": "actuallySleep (39)", "times": [{"starting_time": 1511711558010, "ending_time": 1511711797693, "color":c1(1)}, {"starting_time": 1511711797693, "ending_time": 1511711807701, "color":c2(1), "label": "4m \/ 326.3 MB"}]},
+{"label": "actuallySleep (40)", "times": [{"starting_time": 1511711558048, "ending_time": 1511711762701, "color":c1(1)}, {"starting_time": 1511711762701, "ending_time": 1511711769709, "color":c2(1), "label": "3m 30s \/ 326.3 MB"}]}
+]
+
+
+function getTickFormat() {
+  var MIN = 1000 * 60
+  var HOUR = MIN * 60
+  var DAY = HOUR * 24
+  var delta = (endingMillis - beginningMillis)
+
+  if( delta < 2 * MIN ) {
+    return {
+      format: d3.time.format("%S"),
+      tickTime: d3.time.seconds,
+      tickInterval: 5,
+      tickSize: 6
+    }
+  }
+
+  if( delta < 2 * HOUR ) {
+    return {
+      format: d3.time.format("%M"),
+      tickTime: d3.time.minutes,
+      tickInterval: 5,
+      tickSize: 6
+    }
+  }
+
+  if( delta < 2 * DAY ) {
+    return {
+      format: d3.time.format("%H:%M"),
+      tickTime: d3.time.hours,
+      tickInterval: 1,
+      tickSize: 6
+    }
+  }
+
+  if( delta <= 7 * DAY ) {
+    return {
+      format: d3.time.format("%b %e %H:%M"),
+      tickTime: d3.time.hours,
+      tickInterval: 6,
+      tickSize: 6
+    }
+  }
+
+  return {
+    format: d3.time.format("%b %e"),
+    tickTime: d3.time.days,
+    tickInterval: 1,
+    tickSize: 6
+  }
+}
+
+function getLabelMargin(scale) {
+    $('<span class="labelSpan" style="display: none"></span>').appendTo('body');
+
+    var labelMargin = 0
+    $.each(data, function (key, value) {
+      labelMargin = Math.max(labelMargin, $('.labelSpan').html(value.label).width());
+    });
+
+    $('.labelSpan').remove();
+
+    return (labelMargin * scale);
+}
+
+function render() {
+  handler=null;
+  $("#timeline").empty()
+  $('#label_elapsed').text(elapsed)
+  $('#label_launch').text( d3.time.format('%d %b %Y %H:%M')(new Date(beginningMillis)) )
+
+  var width = $(window).width();
+  var chart = d3.timeline()
+    .stack() // toggles graph stacking
+    .margin({left:getLabelMargin(0.85), right:100, top:0, bottom:0})
+    .tickFormat( getTickFormat() )
+    .rowSeperators('#f5f5f5')
+    .showTimeAxisTick()
+    ;
+  var svg = d3.select("#timeline").append("svg").attr("width", width).datum(data).call(chart);
+}
+
+function hrz() {
+if( handler != null ) clearTimeout(handler)
+  handler = setTimeout(render, 150);
+}
+
+$(document).ready(render)
+$(window).resize(hrz); // resize the applet on window resize
+</script>
+</head>
+
+<body>
+<div>
+  <h3>Processes execution timeline</h3>
+  <p>
+    Launch time: <span id='label_launch'> </span><br>
+    Elapsed time: <span id='label_elapsed'> </span>
+  </p>
+  <div id="timeline"></div>
+</div>
+
+<div id='footer'>
+  Created with Nextflow -- <a href='http://www.nextflow.io' target='_blank'>http://nextflow.io</a>
+</div>
+
+<script type="text/javascript">
+var prot = (("https:" == document.location.protocol) ? "https://" : "http://");
+document.write(unescape("%3Clink href='" + prot + "fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css' %3E%3C/link%3E"));
+</script>
+</body>
+</html>

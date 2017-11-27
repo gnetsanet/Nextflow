@@ -1,4 +1,4 @@
-Channel.from( 0..40 ).into { zeroToSixity1; zeroToSixity2 } 
+Channel.from( 0..400 ).into { zeroToSixity1; zeroToSixity2 } 
 
 
 process prepareToSleep {
